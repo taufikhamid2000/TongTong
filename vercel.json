@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/lock-trips",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
