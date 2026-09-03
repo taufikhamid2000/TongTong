@@ -23,8 +23,11 @@ begin
   values (demo_owner, 'RapidLink Shuttle', '+60312345678', 'ops@rapidlink.example', true)
   returning id into v_operator;
 
+  -- route.name is combined with destination_name as "name → destination"
+  -- by app/rider/neighborhood/[neighborhoodId]/page.tsx, so this must be
+  -- just the route's own short name, not include the destination itself.
   insert into tongtong_routes (operator_id, name, destination_name, destination_lat, destination_lng, status)
-  values (v_operator, 'Pelangi Damansara → Kelana Jaya LRT', 'Kelana Jaya LRT Station', 3.1073, 101.5952, 'active')
+  values (v_operator, 'Pelangi Damansara Shuttle', 'Kelana Jaya LRT Station', 3.1073, 101.5952, 'active')
   returning id into v_route;
 
   insert into tongtong_route_stops (route_id, neighborhood_id, stop_order, pickup_note)
