@@ -24,7 +24,7 @@ export default async function Home() {
         >
           <span className="font-medium">I&apos;m a rider</span>
           <span className="text-sm text-zinc-600 dark:text-zinc-400">
-            Find and book a shuttle near you
+            Browse routes near you — sign in only when you&apos;re ready to book
           </span>
         </Link>
 
