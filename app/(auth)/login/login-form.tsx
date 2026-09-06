@@ -6,10 +6,12 @@ import { login } from "@/lib/auth/actions";
 import { AuthBrandingPanel } from "@/components/auth-branding-panel";
 import { LogoMark } from "@/components/logo-mark";
 import { PasswordInput } from "@/components/password-input";
+import { DemoButton } from "@/components/demo-button";
 import { Spinner } from "@/components/spinner";
 
-export function LoginForm() {
+export function LoginForm({ initialError }: { initialError?: string }) {
   const [state, action, pending] = useActionState(login, undefined);
+  const message = state?.message ?? initialError;
 
   return (
     <div className="flex flex-1 md:items-stretch">
@@ -67,9 +69,9 @@ export function LoginForm() {
               )}
             </div>
 
-            {state?.message && (
+            {message && (
               <p role="alert" className="text-sm text-destructive">
-                {state.message}
+                {message}
               </p>
             )}
 
@@ -82,6 +84,14 @@ export function LoginForm() {
               {pending ? "Logging in…" : "Log in"}
             </button>
           </form>
+
+          <div className="my-4 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs text-foreground/40">or</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          <DemoButton />
 
           <p className="mt-6 text-center text-sm text-foreground/60">
             Don&apos;t have an account?{" "}

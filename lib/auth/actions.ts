@@ -70,6 +70,20 @@ export async function login(
   redirect("/account");
 }
 
+// "Try the demo — no account needed": anonymous sign-in, no account
+// required. Riders can already browse without signing in; this just lets
+// someone poke at the account/operator/neighborhood areas too.
+export async function startDemo() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInAnonymously();
+
+  if (error || !data.user) {
+    redirect(`/login?error=${encodeURIComponent(error?.message ?? "demo_unavailable")}`);
+  }
+
+  redirect("/account");
+}
+
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
