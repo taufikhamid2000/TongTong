@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
@@ -6,6 +7,10 @@ export default async function Home() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-12 bg-zinc-50 px-6 py-24 dark:bg-black">
@@ -49,22 +54,9 @@ export default async function Home() {
         </Link>
       </div>
 
-      {user ? (
-        <Link href="/account" className="text-sm underline">
-          View your account →
-        </Link>
-      ) : (
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          <Link href="/signup" className="font-medium underline">
-            Sign up
-          </Link>{" "}
-          or{" "}
-          <Link href="/login" className="font-medium underline">
-            log in
-          </Link>{" "}
-          to get started.
-        </p>
-      )}
+      <Link href="/account" className="text-sm underline">
+        View your account →
+      </Link>
     </div>
   );
 }
