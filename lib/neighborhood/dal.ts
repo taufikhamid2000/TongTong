@@ -13,7 +13,7 @@ export const getMyNeighborhoods = cache(async () => {
   const supabase = await createClient();
 
   const { data } = await supabase
-    .from("tongtong_neighborhoods")
+    .from("neighborhoods")
     .select("id, name, address, is_verified, created_at")
     .eq("admin_id", session.userId)
     .order("created_at", { ascending: false });
@@ -29,7 +29,7 @@ export const getOwnedNeighborhoodDetail = cache(async (neighborhoodId: string) =
   const supabase = await createClient();
 
   const { data: neighborhood } = await supabase
-    .from("tongtong_neighborhoods")
+    .from("neighborhoods")
     .select("id, name, address, lat, lng, is_verified")
     .eq("id", neighborhoodId)
     .eq("admin_id", session.userId)
@@ -38,9 +38,9 @@ export const getOwnedNeighborhoodDetail = cache(async (neighborhoodId: string) =
   if (!neighborhood) notFound();
 
   const { data: stops } = await supabase
-    .from("tongtong_route_stops")
+    .from("route_stops")
     .select(
-      "id, stop_order, pickup_note, tongtong_routes(id, name, destination_name, status, tongtong_operators(name))"
+      "id, stop_order, pickup_note, routes(id, name, destination_name, status, operators(name))"
     )
     .eq("neighborhood_id", neighborhoodId);
 

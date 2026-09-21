@@ -27,8 +27,8 @@ export async function bookTrip(
   const { seatCount } = validatedFields.data;
 
   const { data: trip } = await supabase
-    .from("tongtong_trip_instances")
-    .select("id, status, max_riders, booking_cutoff_at, tongtong_bookings(seat_count, status)")
+    .from("trip_instances")
+    .select("id, status, max_riders, booking_cutoff_at, bookings(seat_count, status)")
     .eq("id", tripInstanceId)
     .maybeSingle();
 
@@ -43,8 +43,8 @@ export async function bookTrip(
   }
 
   const existingBookings =
-    (trip as unknown as { tongtong_bookings: { seat_count: number; status: string }[] })
-      .tongtong_bookings ?? [];
+    (trip as unknown as { bookings: { seat_count: number; status: string }[] })
+      .bookings ?? [];
   const bookedSeats = existingBookings
     .filter((b) => b.status !== "cancelled")
     .reduce((sum, b) => sum + b.seat_count, 0);
@@ -53,7 +53,7 @@ export async function bookTrip(
     return { message: `Only ${trip.max_riders - bookedSeats} seat(s) left on this trip.` };
   }
 
-  const { error } = await supabase.from("tongtong_bookings").insert({
+  const { error } = await supabase.from("bookings").insert({
     trip_instance_id: tripInstanceId,
     rider_id: session.userId,
     neighborhood_id: neighborhoodId,
@@ -77,7 +77,7 @@ export async function cancelBooking(bookingId: string) {
   const supabase = await createClient();
 
   await supabase
-    .from("tongtong_bookings")
+    .from("bookings")
     .update({ status: "cancelled" })
     .eq("id", bookingId)
     .eq("rider_id", session.userId);
@@ -85,7 +85,7 @@ export async function cancelBooking(bookingId: string) {
   revalidatePath("/rider/bookings");
 }
 
-// Mock payment: no real money moves. tongtong_payments has no write
+// Mock payment: no real money moves. payments has no write
 // policy for authenticated users (see 0001_core_schema.sql) — writes
 // only happen here, server-side, via the admin client, after this
 // action has independently confirmed the payment's booking belongs to
@@ -96,14 +96,14 @@ export async function markPaymentPaid(paymentId: string) {
   const supabase = await createClient();
 
   const { data: payment } = await supabase
-    .from("tongtong_payments")
-    .select("id, status, tongtong_bookings(rider_id)")
+    .from("payments")
+    .select("id, status, bookings(rider_id)")
     .eq("id", paymentId)
     .maybeSingle();
 
   const booking = (
-    payment as unknown as { tongtong_bookings: { rider_id: string } | null } | null
-  )?.tongtong_bookings;
+    payment as unknown as { bookings: { rider_id: string } | null } | null
+  )?.bookings;
 
   if (!payment || booking?.rider_id !== session.userId) {
     return;
@@ -114,7 +114,7 @@ export async function markPaymentPaid(paymentId: string) {
 
   const admin = createAdminClient();
   await admin
-    .from("tongtong_payments")
+    .from("payments")
     .update({ status: "paid", paid_at: new Date().toISOString() })
     .eq("id", paymentId);
 

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
-  const { error } = await supabase.rpc("tongtong_lock_due_trips");
+  const { error } = await supabase.rpc("lock_due_trips");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

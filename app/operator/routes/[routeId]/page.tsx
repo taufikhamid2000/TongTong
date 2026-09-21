@@ -61,7 +61,7 @@ export default async function RouteDetailPage({
                 <span className="text-sm font-medium text-zinc-500">#{stop.stop_order}</span>
                 <div>
                   <p className="font-medium">
-                    {(stop as { tongtong_neighborhoods?: { name?: string } }).tongtong_neighborhoods
+                    {(stop as { neighborhoods?: { name?: string } }).neighborhoods
                       ?.name ?? "Unknown neighborhood"}
                   </p>
                   {stop.pickup_note && (

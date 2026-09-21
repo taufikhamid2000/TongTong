@@ -13,7 +13,7 @@ export const getMyOperator = cache(async () => {
   const supabase = await createClient();
 
   const { data } = await supabase
-    .from("tongtong_operators")
+    .from("operators")
     .select("id, name, contact_phone, contact_email, is_verified, created_at")
     .eq("owner_id", session.userId)
     .maybeSingle();
@@ -27,7 +27,7 @@ export const getMyOperatorRoutes = cache(async () => {
 
   const supabase = await createClient();
   const { data } = await supabase
-    .from("tongtong_routes")
+    .from("routes")
     .select("id, name, destination_name, status, created_at")
     .eq("operator_id", operator.id)
     .order("created_at", { ascending: false });
@@ -46,7 +46,7 @@ export const getOwnedRouteDetail = cache(async (routeId: string) => {
   const supabase = await createClient();
 
   const { data: route } = await supabase
-    .from("tongtong_routes")
+    .from("routes")
     .select("id, name, destination_name, destination_lat, destination_lng, status, operator_id")
     .eq("id", routeId)
     .eq("operator_id", operator.id)
@@ -57,23 +57,23 @@ export const getOwnedRouteDetail = cache(async (routeId: string) => {
   const [{ data: stops }, { data: schedules }, { data: neighborhoods }, { data: tripInstances }] =
     await Promise.all([
       supabase
-        .from("tongtong_route_stops")
-        .select("id, stop_order, pickup_note, neighborhood_id, tongtong_neighborhoods(name, address)")
+        .from("route_stops")
+        .select("id, stop_order, pickup_note, neighborhood_id, neighborhoods(name, address)")
         .eq("route_id", routeId)
         .order("stop_order", { ascending: true }),
       supabase
-        .from("tongtong_schedules")
+        .from("schedules")
         .select("id, days_of_week, departure_time, booking_cutoff_minutes, is_active")
         .eq("route_id", routeId)
         .order("departure_time", { ascending: true }),
       supabase
-        .from("tongtong_neighborhoods")
+        .from("neighborhoods")
         .select("id, name")
         .order("name", { ascending: true }),
       supabase
-        .from("tongtong_trip_instances")
+        .from("trip_instances")
         .select(
-          "id, service_date, departure_at, booking_cutoff_at, status, total_cost, min_riders, max_riders, price_per_rider, tongtong_bookings(seat_count, status)"
+          "id, service_date, departure_at, booking_cutoff_at, status, total_cost, min_riders, max_riders, price_per_rider, bookings(seat_count, status)"
         )
         .eq("route_id", routeId)
         .order("departure_at", { ascending: false }),
@@ -81,8 +81,8 @@ export const getOwnedRouteDetail = cache(async (routeId: string) => {
 
   const tripInstancesWithCounts = (tripInstances ?? []).map((trip) => {
     const bookings =
-      (trip as unknown as { tongtong_bookings: { seat_count: number; status: string }[] })
-        .tongtong_bookings ?? [];
+      (trip as unknown as { bookings: { seat_count: number; status: string }[] })
+        .bookings ?? [];
     const bookedSeats = bookings
       .filter((b) => b.status !== "cancelled")
       .reduce((sum, b) => sum + b.seat_count, 0);

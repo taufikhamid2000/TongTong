@@ -36,7 +36,7 @@ export async function createOperator(
   const supabase = await createClient();
 
   const { name, contactPhone, contactEmail } = validatedFields.data;
-  const { error } = await supabase.from("tongtong_operators").insert({
+  const { error } = await supabase.from("operators").insert({
     owner_id: session.userId,
     name,
     contact_phone: contactPhone || null,
@@ -75,7 +75,7 @@ export async function createRoute(
   const supabase = await createClient();
 
   const { data: route, error } = await supabase
-    .from("tongtong_routes")
+    .from("routes")
     .insert({
       operator_id: operator.id,
       name,
@@ -117,7 +117,7 @@ export async function addRouteStop(
   const { neighborhoodId, stopOrder, pickupNote } = validatedFields.data;
   const supabase = await createClient();
 
-  const { error } = await supabase.from("tongtong_route_stops").insert({
+  const { error } = await supabase.from("route_stops").insert({
     route_id: route.id,
     neighborhood_id: neighborhoodId,
     stop_order: stopOrder,
@@ -152,7 +152,7 @@ export async function addSchedule(
   const { daysOfWeek, departureTime, bookingCutoffMinutes } = validatedFields.data;
   const supabase = await createClient();
 
-  const { error } = await supabase.from("tongtong_schedules").insert({
+  const { error } = await supabase.from("schedules").insert({
     route_id: route.id,
     days_of_week: daysOfWeek,
     departure_time: departureTime,
@@ -201,7 +201,7 @@ export async function createTripInstance(
   );
 
   const supabase = await createClient();
-  const { error } = await supabase.from("tongtong_trip_instances").insert({
+  const { error } = await supabase.from("trip_instances").insert({
     route_id: route.id,
     schedule_id: schedule.id,
     service_date: serviceDate,
@@ -229,7 +229,7 @@ export async function publishRoute(routeId: string) {
   const { route } = await getOwnedRouteDetail(routeId);
   const supabase = await createClient();
 
-  await supabase.from("tongtong_routes").update({ status: "active" }).eq("id", route.id);
+  await supabase.from("routes").update({ status: "active" }).eq("id", route.id);
 
   revalidatePath(`/operator/routes/${routeId}`);
   revalidatePath("/operator");

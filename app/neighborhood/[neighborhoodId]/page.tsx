@@ -4,12 +4,12 @@ type StopWithRoute = {
   id: string;
   stop_order: number;
   pickup_note: string | null;
-  tongtong_routes: {
+  routes: {
     id: string;
     name: string;
     destination_name: string;
     status: string;
-    tongtong_operators: { name: string } | null;
+    operators: { name: string } | null;
   } | null;
 };
 
@@ -46,12 +46,12 @@ export default async function NeighborhoodDetailPage({
                 className="rounded-md border border-black/[.08] px-4 py-3 dark:border-white/[.145]"
               >
                 <p className="font-medium">
-                  {stop.tongtong_routes?.name ?? "Unknown route"} →{" "}
-                  {stop.tongtong_routes?.destination_name}
+                  {stop.routes?.name ?? "Unknown route"} →{" "}
+                  {stop.routes?.destination_name}
                 </p>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Operated by {stop.tongtong_routes?.tongtong_operators?.name ?? "unknown"} ·{" "}
-                  {stop.tongtong_routes?.status}
+                  Operated by {stop.routes?.operators?.name ?? "unknown"} ·{" "}
+                  {stop.routes?.status}
                 </p>
                 {stop.pickup_note && (
                   <p className="text-sm text-zinc-600 dark:text-zinc-400">{stop.pickup_note}</p>

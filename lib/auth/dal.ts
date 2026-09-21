@@ -25,7 +25,7 @@ export const getProfile = cache(async () => {
   const supabase = await createClient();
 
   const { data: profile } = await supabase
-    .from("tongtong_profiles")
+    .from("profiles")
     .select("id, full_name, phone, created_at")
     .eq("id", session.userId)
     .single();

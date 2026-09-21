@@ -6,16 +6,16 @@ type BookingRow = {
   seat_count: number;
   status: string;
   price_charged: number | null;
-  tongtong_trip_instances: {
+  trip_instances: {
     id: string;
     service_date: string;
     departure_at: string;
     status: string;
     total_cost: number;
     price_per_rider: number | null;
-    tongtong_routes: { name: string; destination_name: string } | null;
+    routes: { name: string; destination_name: string } | null;
   } | null;
-  tongtong_payments: { id: string; amount: number; status: string; paid_at: string | null }[];
+  payments: { id: string; amount: number; status: string; paid_at: string | null }[];
 };
 
 export default async function MyBookingsPage() {
@@ -32,8 +32,8 @@ export default async function MyBookingsPage() {
       ) : (
         <ul className="flex flex-col gap-3">
           {bookings.map((booking) => {
-            const trip = booking.tongtong_trip_instances;
-            const payment = booking.tongtong_payments[0];
+            const trip = booking.trip_instances;
+            const payment = booking.payments[0];
             return (
               <li
                 key={booking.id}
@@ -41,7 +41,7 @@ export default async function MyBookingsPage() {
               >
                 <div className="flex items-center justify-between">
                   <p className="font-medium">
-                    {trip?.tongtong_routes?.name} → {trip?.tongtong_routes?.destination_name}
+                    {trip?.routes?.name} → {trip?.routes?.destination_name}
                   </p>
                   <span className="text-xs uppercase tracking-wide text-zinc-500">
                     {booking.status}

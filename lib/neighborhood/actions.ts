@@ -25,7 +25,7 @@ export async function createNeighborhood(
   const supabase = await createClient();
 
   const { name, address, lat, lng } = validatedFields.data;
-  const { error } = await supabase.from("tongtong_neighborhoods").insert({
+  const { error } = await supabase.from("neighborhoods").insert({
     admin_id: session.userId,
     name,
     address,

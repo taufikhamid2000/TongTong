@@ -44,7 +44,7 @@ export default async function NeighborhoodTripsPage({
                 </p>
               </div>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                Operated by {trip.route?.tongtong_operators?.name ?? "unknown"}
+                Operated by {trip.route?.operators?.name ?? "unknown"}
                 {trip.pickupNote && ` · ${trip.pickupNote}`}
               </p>
               <p className="text-sm text-zinc-600 dark:text-zinc-400">
