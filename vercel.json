@@ -4,5 +4,8 @@
       "path": "/api/cron/lock-trips",
       "schedule": "0 0 * * *"
     }
+  ],
+  "regions": [
+    "sin1"
   ]
 }
